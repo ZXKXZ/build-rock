@@ -25,8 +25,8 @@ index 00000000000..44aa58ce21b
 +#include "rk3568.dtsi"
 +
 +/ {
-+	model = "Radxa ROCK3 Model A";
-+	compatible = "radxa,rock3a", "rockchip,rk3568";
++	model = "Mellow Fly-Gemini Pro";
++	compatible = "mellow,flygeminipro", "rockchip,rk3568";
 +
 +	aliases {
 +		ethernet0 = &gmac1;
@@ -541,6 +541,18 @@ index 00000000000..44aa58ce21b
 +			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
 +		};
 +	};
++	
++	can1 {
++		/omit-if-no-ref/
++		can1m0_pins: can1m0_pins {
++			rockchip,pins =
++				/* can1_rxm0 */
++				<1 RK_PA0 3 &pcfg_pull_none>,
++				/* can1_txm0 */
++				<1 RK_PA1 3 &pcfg_pull_none>;
++		};
++	};
++
 +};
 +
 +&pmu_io_domains {
@@ -605,6 +617,13 @@ index 00000000000..44aa58ce21b
 +&uart2 {
 +	status = "okay";
 +};
++
++&can1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&can1m0_pins>;
++	/* gpios = */
++	status = "okay";
++}
 +
 +&usb_host0_ehci {
 +	status = "okay";
