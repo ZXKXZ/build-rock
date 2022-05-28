@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: set time
       run: |
+        sed -i '/stty/d' ~/.bash_profile
+        source  ~/.bash_profile
         sudo rm -f /etc/localtime
         sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
         echo `date +%Y-%m-%d/%H:%M:%S`
