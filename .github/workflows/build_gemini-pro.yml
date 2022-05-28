@@ -1,4 +1,4 @@
-name: Fly-Gemini img Build
+name: Fly-Gemini-P img Build
 
 on:
   push:
