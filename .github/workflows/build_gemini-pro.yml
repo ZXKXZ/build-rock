@@ -1,0 +1,48 @@
+name: Fly-Gemini img Build
+
+on:
+  push:
+    branches:
+#      - master
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: set time
+      run: |
+        sudo rm -f /etc/localtime
+        sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+        echo `date +%Y-%m-%d/%H:%M:%S`
+    - name: checkout
+      uses: actions/checkout@v2
+
+
+    - name: Build Server img
+      run: |
+        ./compile.sh BOARD=rock-3a BRANCH=current RELEASE=bullseye BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=no SKIP_EXTERNAL_TOOLCHAINS=yes KERNEL_CONFIGURE=no COMPRESS_OUTPUTIMAGE=sha,gpg,img
+    
+    - name: Compress .img to .xz
+      run: |
+        path=$(ls ./output/images/Armbian_*-*_*_*_*_*.img)
+        sudo xz -k -v -e -9 -T0 ${path}
+        echo imgPath="${path}.xz" >> $GITHUB_ENV
+        echo imgName="${path##*/}.xz" >> $GITHUB_ENV
+
+    - name: Upload system img.xz
+      run: |
+        chmod +x ./extensions/upx
+        ./extensions/upx login "${{ secrets.BUCKET }}" "${{ secrets.OPERATOR }}" "${{ secrets.OPERATOR_PASSWORD }}"
+        ./extensions/upx put "${{ env.imgPath }}" "/IMG/Build/${{ env.imgName }}"
+        ./extensions/upx logout
+    
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: ${{ env.imgName }}
+#        path: ${{ env.imgPath }}
+#        retention-days: 2
+
+#    - name: Build Desktop img
+#      run: |
+#        ./compile.sh  BOARD=flygemini BRANCH=current RELEASE=bullseye BUILD_MINIMAL=no BUILD_DESKTOP=yes KERNEL_ONLY=no KERNEL_CONFIGURE=no DESKTOP_ENVIRONMENT=xfce DESKTOP_ENVIRONMENT_CONFIG_NAME=config_base CLEAN_LEVEL=none COMPRESS_OUTPUTIMAGE=sha,gpg,img
