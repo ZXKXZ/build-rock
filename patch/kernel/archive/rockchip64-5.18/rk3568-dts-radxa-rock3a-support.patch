@@ -623,7 +623,7 @@ index 00000000000..44aa58ce21b
 +	pinctrl-0 = <&can1m0_pins>;
 +	/* gpios = */
 +	status = "okay";
-+}
++};
 +
 +&usb_host0_ehci {
 +	status = "okay";
