@@ -3,8 +3,8 @@ name: Fly-Gemini img Build
 on:
   push:
     branches:
-#      - master
-      - dev
+      - master
+#      - dev
 
 jobs:
   build:
@@ -25,7 +25,7 @@ jobs:
     
     - name: Compress .img to .xz
       run: |
-        path=$(ls ./output/images/Armbian_*-*_*_*_*_*.img)
+        path=$(ls ./output/images/Armbian_*.img)
         sudo xz -k -v -e -9 -T0 ${path}
         echo imgPath="${path}.xz" >> $GITHUB_ENV
         echo imgName="${path##*/}.xz" >> $GITHUB_ENV
