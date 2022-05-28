@@ -23,7 +23,7 @@ jobs:
 
     - name: Build Server img
       run: |
-        ./compile.sh BOARD=rock-3a BRANCH=current RELEASE=bullseye BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=no SKIP_EXTERNAL_TOOLCHAINS=yes KERNEL_CONFIGURE=no COMPRESS_OUTPUTIMAGE=sha,gpg,img
+        ./compile.sh BOARD=rock-3a BRANCH=current RELEASE=bullseye INSTALL_HEADERS=yes BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=yes SKIP_EXTERNAL_TOOLCHAINS=yes KERNEL_CONFIGURE=no COMPRESS_OUTPUTIMAGE=sha,gpg,img
     
     - name: Compress .img to .xz
       run: |
