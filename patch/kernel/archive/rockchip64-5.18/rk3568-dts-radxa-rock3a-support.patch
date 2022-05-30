@@ -179,6 +179,20 @@ index 00000000000..44aa58ce21b
 +		states = <100000 0x0
 +			  3300000 0x1>;
 +	};
++	
++	can0: can@fe570000 {
++		compatible = "rockchip,canfd-1.0";
++		reg = <0x0 0xfe570000 0x0 0x1000>;
++		interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru CLK_CAN0>, <&cru PCLK_CAN0>;
++		clock-names = "baudclk", "apb_pclk";
++		resets = <&cru SRST_CAN0>, <&cru SRST_P_CAN0>;
++		reset-names = "can", "can-apb";
++		tx-fifo-depth = <6>;
++		rx-fifo-depth = <6>;
++		status = "disabled";
++	};
++
 +	can1: can@fe580000 {
 +		compatible = "rockchip,canfd-1.0";
 +		reg = <0x0 0xfe580000 0x0 0x1000>;
@@ -187,7 +201,20 @@ index 00000000000..44aa58ce21b
 +		clock-names = "baudclk", "apb_pclk";
 +		resets = <&cru SRST_CAN1>, <&cru SRST_P_CAN1>;
 +		reset-names = "can", "can-apb";
-+		tx-fifo-depth = <1>;
++		tx-fifo-depth = <6>;
++		rx-fifo-depth = <6>;
++		status = "disabled";
++	};
++
++	can2: can@fe590000 {
++		compatible = "rockchip,canfd-1.0";
++		reg = <0x0 0xfe590000 0x0 0x1000>;
++		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru CLK_CAN2>, <&cru PCLK_CAN2>;
++		clock-names = "baudclk", "apb_pclk";
++		resets = <&cru SRST_CAN2>, <&cru SRST_P_CAN2>;
++		reset-names = "can", "can-apb";
++		tx-fifo-depth = <6>;
 +		rx-fifo-depth = <6>;
 +		status = "disabled";
 +	};
@@ -553,18 +580,6 @@ index 00000000000..44aa58ce21b
 +			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
 +		};
 +	};
-+	
-+	can1 {
-+		/omit-if-no-ref/
-+		can1m0_pins: can1m0_pins {
-+			rockchip,pins =
-+				/* can1_rxm0 */
-+				<1 RK_PA0 3 &pcfg_pull_none>,
-+				/* can1_txm0 */
-+				<1 RK_PA1 3 &pcfg_pull_none>;
-+		};
-+	};
-+
 +};
 +
 +&pmu_io_domains {
@@ -632,7 +647,8 @@ index 00000000000..44aa58ce21b
 +
 +&can1 {
 +	status = "okay";
-+	assigned-clocks = <&cru 323>;
++	compatible = "rockchip,can-1.0";
++	assigned-clocks = <&cru CLK_CAN1>;
 +	assigned-clock-rates = <100000000>;
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&can1m0_pins>;
@@ -698,9 +714,9 @@ index 00000000000..44aa58ce21b
 +&pcie3x2 {
 +	reset-gpios = <&gpio2 RK_PD6 GPIO_ACTIVE_HIGH>;
 +	vpcie3v3-supply = <&pcie30_3v3>;
-+	//num-lanes = <2>;
++	/*num-lanes = <2>;*/
 +	pinctrl-0 = <&pcie30x2m1_pins>;
-+	bus-scan-delay-ms = <1000>; 
++	bus-scan-delay-ms = <1000>;
 +	status = "okay";
 +};
 +
