@@ -11,10 +11,10 @@ index 479906f3ad7b..bf2a58e3a871 100644
 subdir-y       := $(dts-dirs) overlay
 diff --git a/arch/arm64/boot/dts/rockchip/rk3568-rock-3a.dts b/arch/arm64/boot/dts/rockchip/rk3568-rock-3a.dts
 new file mode 100644
-index 00000000000..44aa58ce21b
+index 00000000000..89420f70621
 --- /dev/null
 +++ b/arch/arm64/boot/dts/rockchip/rk3568-rock-3a.dts
-@@ -0,0 +1,718 @@
+@@ -0,0 +1,760 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +
 +/dts-v1/;
@@ -25,8 +25,8 @@ index 00000000000..44aa58ce21b
 +#include "rk3568.dtsi"
 +
 +/ {
-+	model = "Mellow Fly-Gemini Pro";
-+	compatible = "mellow,flygeminipro", "rockchip,rk3568";
++	model = "Radxa ROCK3 Model A";
++	compatible = "radxa,rock3a", "rockchip,rk3568";
 +
 +	aliases {
 +		ethernet0 = &gmac1;
@@ -82,6 +82,15 @@ index 00000000000..44aa58ce21b
 +		simple-audio-card,codec {
 +			sound-dai = <&rk809>;
 +		};
++	};
++
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		clocks = <&rk809 1>;
++		clock-names = "ext_clock";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_enable_h>;
++		reset-gpios = <&gpio3 RK_PD4 GPIO_ACTIVE_LOW>;
 +	};
 +
 +	vcc12v_dcin: vcc12v-dcin {
@@ -179,7 +188,7 @@ index 00000000000..44aa58ce21b
 +		states = <100000 0x0
 +			  3300000 0x1>;
 +	};
-+	
++
 +	can0: can@fe570000 {
 +		compatible = "rockchip,canfd-1.0";
 +		reg = <0x0 0xfe570000 0x0 0x1000>;
@@ -218,6 +227,7 @@ index 00000000000..44aa58ce21b
 +		rx-fifo-depth = <6>;
 +		status = "disabled";
 +	};
++
 +};
 +
 +&combphy0 {
@@ -283,6 +293,18 @@ index 00000000000..44aa58ce21b
 +	avdd-0v9-supply = <&vdda0v9_image>;
 +	avdd-1v8-supply = <&vcca1v8_image>;
 +	status = "okay";
++};
++
++&hdmi_in {
++	hdmi_in_vp0: endpoint {
++		remote-endpoint = <&vp0_out_hdmi>;
++	};
++};
++
++&hdmi_out {
++	hdmi_out_con: endpoint {
++		remote-endpoint = <&hdmi_con_in>;
++	};
 +};
 +
 +&i2c0 {
@@ -568,6 +590,12 @@ index 00000000000..44aa58ce21b
 +			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
 +		};
 +	};
++
++	sdio-pwrseq {
++		wifi_enable_h: wifi-enable-h {
++			rockchip,pins = <3 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
 +};
 +
 +&pmu_io_domains {
@@ -612,6 +640,29 @@ index 00000000000..44aa58ce21b
 +	status = "okay";
 +};
 +
++&can1 {
++	status = "okay";
++	compatible = "rockchip,can-1.0";
++	assigned-clocks = <&cru CLK_CAN1>;
++	assigned-clock-rates = <100000000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&can1m0_pins>;
++};
++
++&sdmmc2 {
++	bus-width = <4>;
++	cap-sd-highspeed;
++	cap-sdio-irq;
++	disable-wp;
++	keep-power-in-suspend;
++	mmc-pwrseq = <&sdio_pwrseq>;
++	non-removable;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc2m0_bus4 &sdmmc2m0_cmd &sdmmc2m0_clk>;
++	sd-uhs-sdr104;
++	status = "okay";
++};
++
 +&sfc {
 +        status = "okay";
 +	flash@0 {
@@ -631,15 +682,6 @@ index 00000000000..44aa58ce21b
 +
 +&uart2 {
 +	status = "okay";
-+};
-+
-+&can1 {
-+	status = "okay";
-+	compatible = "rockchip,can-1.0";
-+	assigned-clocks = <&cru CLK_CAN1>;
-+	assigned-clock-rates = <100000000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&can1m0_pins>;
 +};
 +
 +&usb_host0_ehci {
@@ -702,16 +744,16 @@ index 00000000000..44aa58ce21b
 +&pcie3x2 {
 +	reset-gpios = <&gpio2 RK_PD6 GPIO_ACTIVE_HIGH>;
 +	vpcie3v3-supply = <&pcie30_3v3>;
-+	/*num-lanes = <2>;*/
++	//num-lanes = <2>;
 +	pinctrl-0 = <&pcie30x2m1_pins>;
 +	bus-scan-delay-ms = <1000>;
 +	status = "okay";
 +};
 +
 +&pcie2x1 {
-+	reset-gpios = <&gpio3 RK_PC1 GPIO_ACTIVE_HIGH>; 
++	reset-gpios = <&gpio3 RK_PC1 GPIO_ACTIVE_HIGH>;
 +	vpcie3v3-supply = <&pcie30_3v3>;
-+	pinctrl-0 = <&pcie20m1_pins>; 
++	pinctrl-0 = <&pcie20m1_pins>;
 +	bus-scan-delay-ms = <1000>;
 +	status = "okay";
 +};
