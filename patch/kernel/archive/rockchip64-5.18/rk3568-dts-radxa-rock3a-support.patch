@@ -14,7 +14,7 @@ new file mode 100644
 index 00000000000..44aa58ce21b
 --- /dev/null
 +++ b/arch/arm64/boot/dts/rockchip/rk3568-rock-3a.dts
-@@ -0,0 +1,681 @@
+@@ -0,0 +1,718 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +
 +/dts-v1/;
@@ -283,18 +283,6 @@ index 00000000000..44aa58ce21b
 +	avdd-0v9-supply = <&vdda0v9_image>;
 +	avdd-1v8-supply = <&vcca1v8_image>;
 +	status = "okay";
-+};
-+
-+&hdmi_in {
-+	hdmi_in_vp0: endpoint {
-+		remote-endpoint = <&vp0_out_hdmi>;
-+	};
-+};
-+
-+&hdmi_out {
-+	hdmi_out_con: endpoint {
-+		remote-endpoint = <&hdmi_con_in>;
-+	};
 +};
 +
 +&i2c0 {
